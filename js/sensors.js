@@ -6,7 +6,7 @@ function setSensors() {
 	var k = {};
 	var l = {};
 	var m = Date.now();
-	var n = 129 / 50;
+	var n = 129 / 150;
 	var o = -160;
 	var p = window.orientation;
 	window.isStart = false;
@@ -72,7 +72,7 @@ function setSensors() {
 				target: {
 					translateZ: o - g
 				},
-				time: 300,
+				time: 100,
 				type: "linear",
 				callBack: function() {
 					tween({
@@ -80,7 +80,7 @@ function setSensors() {
 						target: {
 							translateZ: o
 						},
-						time: 400,
+						time: 100,
 						type: "linear"
 					})
 				}
@@ -91,7 +91,7 @@ function setSensors() {
 					rotateX: c.x,
 					rotateY: c.y
 				},
-				time: 800,
+				time: 200,
 				type: "linear"
 			});
 			tween({
@@ -100,7 +100,7 @@ function setSensors() {
 					rotateX: c.x,
 					rotateY: c.y
 				},
-				time: 800,
+				time: 200,
 				type: "linear"
 			})
 		}
