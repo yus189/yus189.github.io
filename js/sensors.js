@@ -88,8 +88,8 @@ function setSensors() {
 			tween({
 				el: h,
 				target: {
-					rotateX: c.x*10,
-					rotateY: c.y
+					rotateX: c.x,
+					rotateY: c.y*10
 				},
 				time: 100,
 				type: "linear"
@@ -97,8 +97,8 @@ function setSensors() {
 			tween({
 				el: i,
 				target: {
-					rotateX: c.x*10,
-					rotateY: c.y
+					rotateX: c.x,
+					rotateY: c.y*10
 				},
 				time: 100,
 				type: "linear"
