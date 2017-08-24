@@ -1,27 +1,45 @@
 <!DOCTYPE html>
-<html >
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Chill the lion</title>
-
-<link rel="stylesheet" href="css/reset.min.css">
-
-
-<link rel="stylesheet" href="css/style.css">
-
-
-</head>
-
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,user-scalable=no" />
+	<title>anta</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script type="text/javascript" src="js/imgdata.js"></script>
+	<script type="text/javascript" src="js/tween.js"></script>
+	</head>
 <body>
-
-<div id="world"></div>
-<div id="instructions">hold down the mouse</div>
-
-
-<script src='js/three.min.js'></script>
-<script src='js/OrbitControls.js'></script>
-
-<script src="js/index.js"></script>
-
+	<div id="pageBg"></div>
+	<div id="view">
+		<!-- loading -->
+		<div id="logo1">
+			<div class="logoImg">
+				<img src="img/load/logo.png">
+			</div>
+			<p class="logoText">已加载 0%</p>
+		</div>
+		<!-- main -->
+		<div id="mian">
+			<div id="tZ">
+				<!-- 主背景 -->
+				<div id="panoBg"></div>
+				<!-- 云朵 -->
+				<div id="cloud"></div>
+				<!-- 多图层 -->
+				<div id="pano"></div>
+			</div>	
+		</div>
+		<!-- radio & VR -->
+		<div id="audio"></div>
+		<div id="vr"></div>
+		<audio id="media" src="audio/bgm.mp3" loop="loop">
+		</audio> 
+	</div>
+	<script type="text/javascript" src="js/animate.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/drag.js"></script>
+	<script type="text/javascript" src="js/sensors.js"></script>
+	<script type="text/javascript" src="js/audio.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
 </body>
 </html>
