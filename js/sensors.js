@@ -1,7 +1,127 @@
 //陀螺仪 & 横竖屏切换
-eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('s V(){1 h=T.S(\'#12\');1 i=T.S(\'#Y\');1 j={};1 k={};1 l={};1 m=N.K();1 n=17/18;1 o=-U;1 p=2.O;2.C=G;2.F=G;2.E(\'Z\',s(e){p=2.O});2.E(\'11\',s(e){3(2.F){J}X(p){z 0:1 x=e.w;1 y=e.u;t;z P:1 x=e.u;1 y=e.w;t;z-P:1 x=-e.u;1 y=-e.w;t;z 10:1 x=-e.w;1 y=-e.u;t}1 a=N.K();3(a-m<13){J}m=a;3(!C){C=14;j.x=x;j.y=y;l.x=r(h,"q");l.y=r(h,"9")}H{k.x=x;k.y=y;1 b={};b.x=k.x-j.x;b.y=k.y-j.y;1 c={};c.x=l.x+b.x;c.y=l.y+b.y;3(c.x>6){c.x=6}H 3(c.x<-6){c.x=-6}1 d=4.L(4.M((c.x-r(h,"q"))*n));1 f=4.L(4.M((c.y-r(h,"9"))*n));1 g=4.W(d,f);3(g>D){g=D}B({8:Q,7:{R:o-g},5:D,A:"v",15:s(){B({8:Q,7:{R:o},5:16,A:"v"})}});B({8:h,7:{q:c.x,9:c.y},5:I,A:"v"});B({8:i,7:{q:c.x,9:c.y},5:I,A:"v"})}})}',62,71,'|var|window|if|Math|time|45|target|el|rotateY|||||||||||||||||rotateX|css|function|break|gamma|linear|beta|||case|type|tween|isStart|300|addEventListener|isTouch|false|else|800|return|now|abs|round|Date|orientation|90|tZ|translateZ|querySelector|document|160|setSensors|max|switch|panoBg|orientationchange|180|deviceorientation|pano|30|true|callBack|400|129|'.split('|'),0,{}))
+function setSensors() {
+	var h = document.querySelector('#pano');
+	var i = document.querySelector('#panoBg');
+	var j = {};
+	var k = {};
+	var l = {};
+	var m = Date.now();
+	var n = 129 / 50;
+	var o = -160;
+	var p = window.orientation;
+	window.isStart = false;
+	window.isTouch = false;
+	window.addEventListener('orientationchange', function(e) {
+		p = window.orientation
+	});
+	window.addEventListener('deviceorientation', function(e) {
+		if (window.isTouch) {
+			return
+		}
+		switch (p) {
+		case 0:
+			var x = e.beta;
+			var y = e.gamma;
+			break;
+		case 90:
+			var x = e.gamma;
+			var y = e.beta;
+			break;
+		case -90:
+			var x = -e.gamma;
+			var y = -e.beta;
+			break;
+		case 180:
+			var x = -e.beta;
+			var y = -e.gamma;
+			break
+		}
+		var a = Date.now();
+		if (a - m < 30) {
+			return
+		}
+		m = a;
+		if (!isStart) {
+			isStart = true;
+			j.x = x;
+			j.y = y;
+			l.x = css(h, "rotateX");
+			l.y = css(h, "rotateY")
+		} else {
+			k.x = x;
+			k.y = y;
+			var b = {};
+			b.x = k.x - j.x;
+			b.y = k.y - j.y;
+			var c = {};
+			c.x = l.x + b.x;
+			c.y = l.y + b.y;
+			if (c.x > 45) {
+				c.x = 45
+			} else if (c.x < -45) {
+				c.x = -45
+			}
+			var d = Math.abs(Math.round((c.x - css(h, "rotateX")) * n));
+			var f = Math.abs(Math.round((c.y - css(h, "rotateY")) * n));
+			var g = Math.max(d, f);
+			if (g > 300) {
+				g = 300
+			}
+			tween({
+				el: tZ,
+				target: {
+					translateZ: o - g
+				},
+				time: 300,
+				type: "linear",
+				callBack: function() {
+					tween({
+						el: tZ,
+						target: {
+							translateZ: o
+						},
+						time: 400,
+						type: "linear"
+					})
+				}
+			});
+			tween({
+				el: h,
+				target: {
+					rotateX: c.x,
+					rotateY: c.y
+				},
+				time: 800,
+				type: "linear"
+			});
+			tween({
+				el: i,
+				target: {
+					rotateX: c.x,
+					rotateY: c.y
+				},
+				time: 800,
+				type: "linear"
+			})
+		}
+	})
+}
+
 
 //切换分辨率
 //根据可视区高度和固定的视角计算景深
 //计算景深 & 视距不变 == setPerc
-eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('8 f(){1();o.j=1;8 1(){0 a=3.7(\'#i\');0 b=3.7(\'#l\');0 c=e.5;0 d=3.g.h;0 4=2.k(2.9(c/m*2.n)*d*.5);a.6.p=a.6.q=4+"r";s(b,"t",4)}}',30,30,'var|resetview|Math|document|R||style|querySelector|function|tan|||||52|setPerc|documentElement|clientHeight|view|onresize|round|mian|180|PI|window|WebkitPerspective|perspective|px|css|translateZ'.split('|'),0,{}))
+function setPerc() {
+	resetview();
+	window.onresize = resetview;
+
+	function resetview() {
+		var a = document.querySelector('#view');
+		var b = document.querySelector('#mian');
+		var c = 52.5;
+		var d = document.documentElement.clientHeight;
+		var R = Math.round(Math.tan(c / 180 * Math.PI) * d * .5);
+		a.style.WebkitPerspective = a.style.perspective = R + "px";
+		css(b, "translateZ", R)
+	}
+}
