@@ -55,7 +55,7 @@ function setSensors() {
 			b.y = k.y - j.y;
 			var c = {};
 			c.x = l.x + b.x;
-			c.y = l.y + b.y;
+			c.y = (l.y + b.y)*4;
 			if (c.x > 45) {
 				c.x = 45
 			} else if (c.x < -45) {
@@ -89,18 +89,18 @@ function setSensors() {
 				el: h,
 				target: {
 					rotateX: c.x,
-					rotateY: c.y*5
+					rotateY: c.y
 				},
-				time: 100,
+				time: 300,
 				type: "linear"
 			});
 			tween({
 				el: i,
 				target: {
 					rotateX: c.x,
-					rotateY: c.y*5
+					rotateY: c.y
 				},
-				time: 100,
+				time: 300,
 				type: "linear"
 			})
 		}
