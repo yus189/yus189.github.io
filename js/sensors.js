@@ -89,7 +89,7 @@ function setSensors() {
 				el: h,
 				target: {
 					rotateX: c.x,
-					rotateY: c.y*10
+					rotateY: c.y*5
 				},
 				time: 100,
 				type: "linear"
@@ -98,7 +98,7 @@ function setSensors() {
 				el: i,
 				target: {
 					rotateX: c.x,
-					rotateY: c.y*10
+					rotateY: c.y*5
 				},
 				time: 100,
 				type: "linear"
