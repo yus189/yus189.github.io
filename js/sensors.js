@@ -6,8 +6,8 @@ function setSensors() {
 	var k = {};
 	var l = {};
 	var m = Date.now();
-	var n = 129 / 3500;
-	var o = -88;
+	var n = 129 / 20;
+	var o = -100;
 	var p = window.orientation;
 	window.isStart = false;
 	window.isTouch = false;
@@ -88,8 +88,8 @@ function setSensors() {
 			tween({
 				el: h,
 				target: {
-					rotateX: c.x*20,
-					rotateY: c.y*20
+					rotateX: c.x*10,
+					rotateY: c.y
 				},
 				time: 100,
 				type: "linear"
@@ -97,8 +97,8 @@ function setSensors() {
 			tween({
 				el: i,
 				target: {
-					rotateX: c.x*20,
-					rotateY: c.y*20
+					rotateX: c.x*10,
+					rotateY: c.y
 				},
 				time: 100,
 				type: "linear"
