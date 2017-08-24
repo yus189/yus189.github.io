@@ -6,7 +6,7 @@ function setSensors() {
 	var k = {};
 	var l = {};
 	var m = Date.now();
-	var n = 129 / 150;
+	var n = 129 / 900;
 	var o = -160;
 	var p = window.orientation;
 	window.isStart = false;
