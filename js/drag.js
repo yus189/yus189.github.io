@@ -4,7 +4,7 @@ function setDarg(){
 	var tZ = document.querySelector('#tZ');
 	var startPoint = {x:0,y:0};
 	var panoBgDeg = {x:0,y:0};
-	var scale ={x:129/18,y:1170/80} 
+	var scale ={x:129/26,y:1170/80} 
 	var startZ = css(tZ,"translateZ");
 	var lastDeg = {x:0,y:0};
 	var lastDis = {x:0,y:0};
