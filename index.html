@@ -1,46 +1,606 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<title>anta</title>
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<script type="text/javascript" src="js/imgdata.js"></script>
-	<script type="text/javascript" src="js/tween.js"></script>
-	</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jarvis Luxurious Christmas</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Times+New+Roman&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505; /* Deep Black */
+            font-family: 'Times New Roman', serif;
+            user-select: none;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none; /* Let clicks pass through to hidden inputs if needed */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.3);
+            margin-top: 20px;
+            letter-spacing: 5px;
+            opacity: 0;
+            animation: fadeIn 3s ease-out forwards;
+            text-align: center;
+        }
+
+        #instructions {
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            background: rgba(0, 20, 0, 0.6); /* Deep Green tint */
+            padding: 15px 30px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 4px;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .key-highlight {
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFD700;
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            z-index: 10;
+        }
+
+        /* Hidden elements */
+        #webcam {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+            pointer-events: none;
+        }
+
+        #image-upload {
+            display: none;
+        }
+
+        #upload-btn {
+            background: transparent;
+            color: #FFD700;
+            border: 1px solid #FFD700;
+            padding: 10px 20px;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        #upload-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
 <body>
-	<div id="pageBg"></div>
-	<div id="view">
-		<!-- loading -->
-		<div id="logo1">
-			<div class="logoImg">
-				<img src="img/load/logo.png">
-			</div>
-			<p class="logoText">已加载 0%</p>
-		</div>
-		<!-- main -->
-		<div id="mian">
-			<div id="tZ">
-				<!-- 主背景 -->
-				<div id="panoBg"></div>
-				<!-- 云朵 -->
-				<div id="cloud"></div>
-				<!-- 多图层 -->
-				<div id="pano"></div>
-			</div>	
-		</div>
-		<!-- radio & VR -->
-		<div id="audio"></div>
-		<div id="vr"></div>
-		<audio id="media" src="audio/bgm.mp3" loop="loop">
-		</audio> 
-	</div>
-	<script type="text/javascript" src="js/animate.js"></script>
-	<script type="text/javascript" src="js/main.js"></script>
-	<script type="text/javascript" src="js/drag.js"></script>
-	<script type="text/javascript" src="js/sensors.js"></script>
-	<script type="text/javascript" src="js/audio.js"></script>
-	<script type="text/javascript" src="js/index.js"></script>
+
+    <div id="loading">Initialising Jarvis Vision System...</div>
+
+    <div id="ui-layer">
+        <h1>Merry Christmas</h1>
+        
+        <div id="controls">
+            <div id="instructions">
+                <span class="key-highlight">🖐 Open Palm</span>: Nebula Explosion &nbsp;|&nbsp; 
+                <span class="key-highlight">✊ Fist</span>: Form Tree &nbsp;|&nbsp; 
+                <span class="key-highlight">👌 Pinch</span>: Focus Photo<br>
+                Move hand to rotate scene.
+                <br>
+                <button id="upload-btn" onclick="document.getElementById('image-upload').click()">Upload Memory</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Inputs/Video -->
+    <input type="file" id="image-upload" accept="image/*">
+    <video id="webcam" autoplay playsinline></video>
+    <div id="canvas-container"></div>
+
+    <!-- Import Maps -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { FilesetResolver, GestureRecognizer } from '@mediapipe/tasks-vision';
+
+        // --- Config ---
+        const PARTICLE_COUNT = 1500;
+        const GOLD_COLOR = 0xFFD700;
+        const GREEN_COLOR = 0x004400; // Deep green
+        const SNOW_COUNT = 300;
+        
+        // --- Global State ---
+        const state = {
+            targetShape: 'tree', // tree, nebula, photo
+            particles: [],
+            mouse: new THREE.Vector2(),
+            handPosition: { x: 0, y: 0 },
+            hasPhoto: false,
+            photoColors: null
+        };
+
+        // --- Three.js Setup ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.002);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 100;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Perf optimization
+        container.appendChild(renderer.domElement);
+
+        // --- Post Processing (Bloom) ---
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+        bloomPass.threshold = 0;
+        bloomPass.strength = 1.8; // High bloom for luxury feel
+        bloomPass.radius = 0.5;
+
+        const composer = new EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
+        // --- Texture Generation (Procedural) ---
+        function createSparkleTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+            grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            grad.addColorStop(0.4, 'rgba(255, 215, 0, 0.5)');
+            grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 32, 32);
+            const texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        // --- Particle System ---
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(PARTICLE_COUNT * 3);
+        const colors = new Float32Array(PARTICLE_COUNT * 3);
+        const sizes = new Float32Array(PARTICLE_COUNT);
+        
+        const targets = {
+            tree: new Float32Array(PARTICLE_COUNT * 3),
+            nebula: new Float32Array(PARTICLE_COUNT * 3),
+            photo: new Float32Array(PARTICLE_COUNT * 3)
+        };
+
+        const colorTargets = {
+            gold: new Float32Array(PARTICLE_COUNT * 3),
+            photo: new Float32Array(PARTICLE_COUNT * 3)
+        };
+
+        const sparkleTexture = createSparkleTexture();
+        const material = new THREE.PointsMaterial({
+            size: 1.5,
+            map: sparkleTexture,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            transparent: true
+        });
+
+        // Initialize Particles
+        const colorObj = new THREE.Color(GOLD_COLOR);
+        
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            // Initial Pos (Nebula-ish)
+            positions[i * 3] = (Math.random() - 0.5) * 200;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 200;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+
+            // Colors (Gold variation)
+            colors[i * 3] = colorObj.r;
+            colors[i * 3 + 1] = colorObj.g;
+            colors[i * 3 + 2] = colorObj.b;
+            
+            // Store base gold color
+            colorTargets.gold[i * 3] = colorObj.r;
+            colorTargets.gold[i * 3 + 1] = colorObj.g;
+            colorTargets.gold[i * 3 + 2] = colorObj.b;
+
+            sizes[i] = Math.random() * 2;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+        // Note: PointsMaterial uses uniform size, but we can animate size if we used custom shader. 
+        // For simplicity with built-in PointsMaterial, we rely on texture alpha for size feel.
+
+        const particlesMesh = new THREE.Points(geometry, material);
+        scene.add(particlesMesh);
+
+        // --- Snow System ---
+        const snowGeo = new THREE.BufferGeometry();
+        const snowPos = new Float32Array(SNOW_COUNT * 3);
+        const snowVel = new Float32Array(SNOW_COUNT); // fall speed
+        
+        for(let i=0; i<SNOW_COUNT; i++){
+            snowPos[i*3] = (Math.random() - 0.5) * 300;
+            snowPos[i*3+1] = Math.random() * 200;
+            snowPos[i*3+2] = (Math.random() - 0.5) * 300;
+            snowVel[i] = 0.1 + Math.random() * 0.3;
+        }
+        snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPos, 3));
+        const snowMat = new THREE.PointsMaterial({
+            color: 0xFFFFFF,
+            size: 0.8,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        const snowSystem = new THREE.Points(snowGeo, snowMat);
+        scene.add(snowSystem);
+
+
+        // --- Shape Calculations ---
+
+        function calculateTree() {
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const t = i / PARTICLE_COUNT;
+                const angle = t * Math.PI * 30; // Spiral density
+                const radius = (1 - t) * 40; // Base width
+                const height = t * 100 - 50;
+                
+                // Add some jitter for "natural" look
+                const jitter = 0.5;
+
+                targets.tree[i * 3] = Math.cos(angle) * radius + (Math.random()-0.5)*jitter;
+                targets.tree[i * 3 + 1] = height + (Math.random()-0.5)*jitter;
+                targets.tree[i * 3 + 2] = Math.sin(angle) * radius + (Math.random()-0.5)*jitter;
+            }
+        }
+
+        function calculateNebula() {
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const r = 80 * Math.cbrt(Math.random()); // Sphere distribution
+                const theta = Math.random() * 2 * Math.PI;
+                const phi = Math.acos(2 * Math.random() - 1);
+
+                targets.nebula[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                targets.nebula[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                targets.nebula[i * 3 + 2] = r * Math.cos(phi);
+            }
+        }
+
+        // Initialize shapes
+        calculateTree();
+        calculateNebula();
+        // Photo target initializes as nebula until upload
+        targets.photo.set(targets.nebula);
+
+
+        // --- Photo Processing ---
+        const imageLoader = document.getElementById('image-upload');
+        imageLoader.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    processImage(img);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function processImage(img) {
+            const tempCanvas = document.createElement('canvas');
+            const ctx = tempCanvas.getContext('2d');
+            
+            // Grid dimensions (approx sqrt of particle count)
+            const cols = Math.floor(Math.sqrt(PARTICLE_COUNT));
+            const rows = Math.floor(PARTICLE_COUNT / cols);
+            
+            tempCanvas.width = cols;
+            tempCanvas.height = rows;
+            
+            // Draw and resize image
+            ctx.drawImage(img, 0, 0, cols, rows);
+            const imgData = ctx.getImageData(0, 0, cols, rows).data;
+
+            // Calculate Grid Positions centered
+            const spacing = 1.5; // space between dots
+            const startX = -(cols * spacing) / 2;
+            const startY = (rows * spacing) / 2;
+
+            for(let i=0; i < cols * rows; i++) {
+                if(i >= PARTICLE_COUNT) break;
+
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+
+                // Position: Flat plane
+                targets.photo[i*3] = startX + col * spacing;
+                targets.photo[i*3+1] = startY - row * spacing;
+                targets.photo[i*3+2] = 0;
+
+                // Colors
+                const r = imgData[i*4] / 255;
+                const g = imgData[i*4+1] / 255;
+                const b = imgData[i*4+2] / 255;
+                
+                colorTargets.photo[i*3] = r;
+                colorTargets.photo[i*3+1] = g;
+                colorTargets.photo[i*3+2] = b;
+            }
+            
+            state.hasPhoto = true;
+            
+            // Add golden frame particles (re-purpose remaining particles)
+            const usedParticles = cols * rows;
+            const remaining = PARTICLE_COUNT - usedParticles;
+            if(remaining > 0) {
+                // ... logic to make a frame could go here, for now just scatter them behind
+                for(let j=usedParticles; j<PARTICLE_COUNT; j++) {
+                    targets.photo[j*3] = (Math.random()-0.5) * 100;
+                    targets.photo[j*3+1] = (Math.random()-0.5) * 100;
+                    targets.photo[j*3+2] = -10; // behind
+                }
+            }
+            
+            // Trigger animation if we are in photo mode
+            if(state.targetShape === 'photo') {
+                // Refresh? No, loop handles it
+            } else {
+                // Auto switch to photo for feedback
+                state.targetShape = 'photo';
+            }
+        }
+
+
+        // --- MediaPipe Logic ---
+        let gestureRecognizer;
+        let runningMode = "VIDEO";
+        const video = document.getElementById("webcam");
+
+        async function createGestureRecognizer() {
+            const vision = await FilesetResolver.forVisionTasks(
+                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
+            );
+            gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task",
+                    delegate: "GPU"
+                },
+                runningMode: runningMode,
+                numHands: 1
+            });
+            
+            document.getElementById('loading').style.display = 'none';
+            enableCam();
+        }
+
+        function enableCam() {
+            if (!gestureRecognizer) return;
+
+            navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+                video.srcObject = stream;
+                video.addEventListener("loadeddata", predictWebcam);
+            });
+        }
+
+        let lastVideoTime = -1;
+        async function predictWebcam() {
+            if (video.currentTime !== lastVideoTime) {
+                lastVideoTime = video.currentTime;
+                const results = gestureRecognizer.recognizeForVideo(video, Date.now());
+
+                if (results.gestures.length > 0) {
+                    const gesture = results.gestures[0][0];
+                    const landmarks = results.landmarks[0]; // array of {x,y,z}
+                    
+                    // 1. Hand Tracking for Camera Rotation
+                    // Landmarks coordinates are 0-1. 0.5 is center.
+                    // Wrist is index 0, Middle Finger MCP is 9. Let's average.
+                    const handX = landmarks[9].x; 
+                    const handY = landmarks[9].y;
+                    
+                    // Smooth transition for hand position
+                    state.handPosition.x += ( (handX - 0.5) * 2 - state.handPosition.x ) * 0.1;
+                    state.handPosition.y += ( (handY - 0.5) * 2 - state.handPosition.y ) * 0.1;
+
+
+                    // 2. Gesture Logic
+                    // console.log(gesture.categoryName);
+                    
+                    if(gesture.categoryName === 'Closed_Fist') {
+                        state.targetShape = 'tree';
+                    } else if (gesture.categoryName === 'Open_Palm') {
+                        state.targetShape = 'nebula';
+                    } 
+                    
+                    // 3. Custom Pinch Detection (Thumb Tip 4, Index Tip 8)
+                    const thumbTip = landmarks[4];
+                    const indexTip = landmarks[8];
+                    const distance = Math.sqrt(
+                        Math.pow(thumbTip.x - indexTip.x, 2) + 
+                        Math.pow(thumbTip.y - indexTip.y, 2)
+                    );
+                    
+                    // Threshold for pinch (normalized coords)
+                    if(distance < 0.05 && state.hasPhoto) {
+                        state.targetShape = 'photo';
+                    }
+                }
+            }
+            window.requestAnimationFrame(predictWebcam);
+        }
+
+
+        // --- Animation Loop ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const delta = clock.getDelta();
+            const time = clock.getElapsedTime();
+
+            // 1. Move Particles
+            const currentPositions = geometry.attributes.position.array;
+            const currentColors = geometry.attributes.color.array;
+            
+            let targetPosArray = targets[state.targetShape];
+            
+            // Determine Color Target
+            let targetColorArray = colorTargets.gold;
+            if(state.targetShape === 'photo' && state.hasPhoto) {
+                targetColorArray = colorTargets.photo;
+            }
+
+            // Speed of transition
+            const lerpSpeed = 3.0 * delta;
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                // Position Interpolation
+                const px = i * 3;
+                const py = i * 3 + 1;
+                const pz = i * 3 + 2;
+
+                currentPositions[px] += (targetPosArray[px] - currentPositions[px]) * lerpSpeed;
+                currentPositions[py] += (targetPosArray[py] - currentPositions[py]) * lerpSpeed;
+                currentPositions[pz] += (targetPosArray[pz] - currentPositions[pz]) * lerpSpeed;
+
+                // Color Interpolation
+                currentColors[px] += (targetColorArray[px] - currentColors[px]) * lerpSpeed;
+                currentColors[py] += (targetColorArray[py] - currentColors[py]) * lerpSpeed;
+                currentColors[pz] += (targetColorArray[pz] - currentColors[pz]) * lerpSpeed;
+
+                // Idle Animation (Breathing/Twinkle)
+                if (state.targetShape === 'tree') {
+                    // Slight spiral rotation
+                    const angle = 0.5 * delta;
+                    const x = currentPositions[px];
+                    const z = currentPositions[pz];
+                    // currentPositions[px] = x * Math.cos(angle) - z * Math.sin(angle); // Too expensive to do manual rotation here?
+                    // Let's rotate the whole mesh container instead for the tree spin
+                }
+            }
+
+            geometry.attributes.position.needsUpdate = true;
+            geometry.attributes.color.needsUpdate = true;
+
+            // 2. Rotate Scene based on Hand
+            // Invert control feel: hand right -> rotate scene left
+            const targetRotX = state.handPosition.y * 0.5;
+            const targetRotY = state.handPosition.x * 0.5;
+            
+            scene.rotation.x += (targetRotX - scene.rotation.x) * 0.05;
+            scene.rotation.y += (targetRotY - scene.rotation.y) * 0.05;
+
+            // Constant gentle rotation for tree mode
+            if(state.targetShape === 'tree') {
+                particlesMesh.rotation.y += 0.005;
+            } else {
+                particlesMesh.rotation.y *= 0.95; // dampen
+            }
+
+
+            // 3. Snow Animation
+            const snowPositions = snowGeo.attributes.position.array;
+            for(let i=0; i<SNOW_COUNT; i++) {
+                // Y goes down
+                snowPositions[i*3+1] -= snowVel[i];
+                // Wiggle X
+                snowPositions[i*3] += Math.sin(time + i) * 0.02;
+
+                // Reset
+                if(snowPositions[i*3+1] < -100) {
+                    snowPositions[i*3+1] = 100;
+                }
+            }
+            snowGeo.attributes.position.needsUpdate = true;
+
+            // Render
+            composer.render();
+        }
+
+        // Start
+        createGestureRecognizer();
+        animate();
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
 </body>
 </html>
